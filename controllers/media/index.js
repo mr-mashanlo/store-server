@@ -1,7 +1,7 @@
 const MediaController = require( './mediaController' );
-const LocalMediaController = require( './localMediaController' );
+const MongoMediaController = require( './mongoMediaController' );
 
-const localMediaController = new LocalMediaController();
-const mediaController = new MediaController( localMediaController );
+const mongoMediaController = new MongoMediaController();
+const mediaController = new MediaController( mongoMediaController );
 
 module.exports = mediaController;
