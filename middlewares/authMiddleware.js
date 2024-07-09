@@ -1,6 +1,6 @@
 const jwt = require( 'jsonwebtoken' );
 const TokenModel = require( '../schemas/tokenModel' );
-const { Unauthorized, Forbidden } = require( '../services/errorService' );
+const { Unauthorized, Forbidden } = require( '../services/error' );
 
 const authMiddleware = async ( req, res, next ) => {
 
@@ -19,7 +19,7 @@ const authMiddleware = async ( req, res, next ) => {
     return next( new Unauthorized( 'Access token is not valid', [ { path: 'AToken', msg: 'Access token is not valid' } ] ) );
   }
 
-  req.user = { id: verifiedAToken._id, email: verifiedAToken.email };
+  req.me = { id: verifiedAToken.id, email: verifiedAToken.email, role: verifiedAToken.role };
 
   next();
 };

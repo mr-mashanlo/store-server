@@ -12,6 +12,10 @@ module.exports = class AuthController {
     this.controller.signup( req, res, next );
   };
 
+  logout = ( req, res, next ) => {
+    this.controller.logout( req, res, next );
+  };
+
   delete = ( req, res, next ) => {
     this.controller.delete( req, res, next );
   };
