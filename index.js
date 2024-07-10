@@ -9,7 +9,7 @@ const authRouter = require( './routers/authRouter' );
 const errorMiddleware = require( './middlewares/errorMiddleware' );
 
 const app = express();
-app.use( cors( { origin: [ process.env.FRONT_URI ] } ) );
+app.use( cors( { credentials: true, origin: [ process.env.FRONT_URI ] } ) );
 app.use( cookieParser() );
 app.use( express.json() );
 app.use( '/uploads', express.static( path.join( __dirname, 'uploads' ) ) );
