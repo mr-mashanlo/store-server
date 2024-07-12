@@ -6,8 +6,8 @@ module.exports = class MongoMediaController {
 
   get = async ( req, res, next ) => {
     try {
-      const images = await MediaModel.find();
-      res.send( { images } );
+      const images = await MediaModel.find().sort( { _id: -1 } );
+      res.send( images );
     } catch ( error ) {
       next( error );
     }
