@@ -79,7 +79,7 @@ module.exports = class MongoAuthController {
 
   token = async ( req, res, next ) => {
     try {
-      const AToken = req.headers.authorization ? req.headers.authorization.split( ' ' )[ 1 ] : null;
+      const { AToken } = req.cookies;
       const tokens = await TokenModel.findOne( { AToken } );
       const user = jwt.verify( tokens.RToken, process.env.REFRESH_KEY );
       const updatedTokens = await TokenService.create( user );
