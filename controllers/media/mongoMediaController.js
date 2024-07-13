@@ -20,7 +20,7 @@ module.exports = class MongoMediaController {
       }
       const fileURL = `${req.protocol}://${req.get( 'host' )}/uploads/${req.file.filename}`;
       await MediaModel.create( { name: req.file.filename, alt: '', url: fileURL } );
-      res.send( { msg: `File uploaded: ${req.file.filename}` } );
+      res.send( { success: true, msg: `File uploaded: ${req.file.filename}` } );
     } catch ( error ) {
       next( error );
     }
@@ -35,7 +35,7 @@ module.exports = class MongoMediaController {
         if ( err ) {
           return res.status( 400 ).send( 'File not found.' );
         }
-        res.send( { msg: `File ${filename} deleted successfully.` } );
+        res.send( { success: true, msg: `File ${filename} deleted successfully.` } );
       } );
     } catch ( error ) {
       next( error );

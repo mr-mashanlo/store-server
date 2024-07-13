@@ -61,7 +61,7 @@ module.exports = class MongoAuthController {
   logout = async ( req, res, next ) => {
     try {
       await TokenModel.deleteOne( { user: req.me.id } );
-      res.send( { msg: 'Logout' } );
+      res.send( { success: true, msg: 'Logouted' } );
     } catch ( error ) {
       next( error );
     }
@@ -71,7 +71,7 @@ module.exports = class MongoAuthController {
     try {
       await UserModel.deleteOne( { _id: req.me.id } );
       await TokenModel.deleteOne( { user: req.me.id } );
-      res.send( { msg: 'Delete' } );
+      res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );
     }

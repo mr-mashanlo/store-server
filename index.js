@@ -6,6 +6,7 @@ const cors = require( 'cors' );
 const path = require( 'path' );
 const mediaRouter = require( './routers/mediaRouter' );
 const authRouter = require( './routers/authRouter' );
+const userRouter = require( './routers/userRouter' );
 const errorMiddleware = require( './middlewares/errorMiddleware' );
 
 const app = express();
@@ -15,6 +16,7 @@ app.use( express.json() );
 app.use( '/uploads', express.static( path.join( __dirname, 'uploads' ) ) );
 app.use( '/media', mediaRouter );
 app.use( '/auth', authRouter );
+app.use( '/user', userRouter );
 app.use( errorMiddleware );
 
 const start = async () => {
