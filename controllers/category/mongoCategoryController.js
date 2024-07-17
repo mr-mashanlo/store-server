@@ -1,4 +1,5 @@
 const CategoryModel = require( '../../schemas/categoryModel' );
+const ProductModel = require( '../../schemas/productModel' );
 
 module.exports = class MongoCategoryController {
 
@@ -24,8 +25,9 @@ module.exports = class MongoCategoryController {
 
   delete = async ( req, res, next ) => {
     try {
-      const id = req.params.id;
-      await CategoryModel.deleteOne( { _id: id } );
+      const slug = req.params.slug;
+      await ProductModel.updateMany( { category: slug }, { $set: { category: 'default' } } );
+      await CategoryModel.deleteOne( { slug } );
       res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );

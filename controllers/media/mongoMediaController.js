@@ -1,6 +1,7 @@
 const path = require( 'path' );
 const fs = require( 'fs' );
 const MediaModel = require( '../../schemas/mediaModel' );
+const ProductModel = require( '../../schemas/productModel' );
 
 module.exports = class MongoMediaController {
 
@@ -30,6 +31,8 @@ module.exports = class MongoMediaController {
     try {
       const filename = req.params.filename;
       const filePath = path.join( __dirname, '../../uploads/', filename );
+      const fileURL = process.env.BACK_URL + '/uploads/' + filename;
+      await ProductModel.updateMany( { images: { $in: [ fileURL ] } }, { $pull: { images: fileURL } } );
       await MediaModel.deleteOne( { name: filename } );
       fs.unlink( filePath, ( err ) => {
         if ( err ) {
