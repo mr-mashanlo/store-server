@@ -6,7 +6,7 @@ module.exports = class MongoCategoryController {
   getAll = async ( req, res, next ) => {
     try {
       const categories = await CategoryModel.find();
-      res.send( categories );
+      return res.send( categories );
     } catch ( error ) {
       next( error );
     }
@@ -16,8 +16,8 @@ module.exports = class MongoCategoryController {
     try {
       const title = req.body.title;
       const slug = req.body.slug;
-      await CategoryModel.create( { title, slug } );
-      res.send( { success: true, msg: 'Created' } );
+      const category = await CategoryModel.create( { title, slug } );
+      return res.send( category );
     } catch ( error ) {
       next( error );
     }
@@ -28,7 +28,7 @@ module.exports = class MongoCategoryController {
       const slug = req.params.slug;
       await ProductModel.updateMany( { category: slug }, { $set: { category: 'default' } } );
       await CategoryModel.deleteOne( { slug } );
-      res.send( { success: true, msg: 'Deleted' } );
+      return res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );
     }

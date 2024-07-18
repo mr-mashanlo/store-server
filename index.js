@@ -9,6 +9,7 @@ const authRouter = require( './routers/authRouter' );
 const userRouter = require( './routers/userRouter' );
 const productRouter = require( './routers/productRouter' );
 const categoryRouter = require( './routers/categoryRouter' );
+const addressRouter = require( './routers/addressRouter' );
 const errorMiddleware = require( './middlewares/errorMiddleware' );
 
 const app = express();
@@ -21,6 +22,7 @@ app.use( '/auth', authRouter );
 app.use( '/user', userRouter );
 app.use( '/product', productRouter );
 app.use( '/category', categoryRouter );
+app.use( '/address', addressRouter );
 app.use( errorMiddleware );
 
 const start = async () => {

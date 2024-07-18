@@ -6,7 +6,7 @@ module.exports = class MongoUserController {
   getAll = async ( req, res, next ) => {
     try {
       const users = await UserModel.find().select( '-password' );
-      res.send( users );
+      return res.send( users );
     } catch ( error ) {
       next( error );
     }
@@ -14,9 +14,10 @@ module.exports = class MongoUserController {
 
   getOne = async ( req, res, next ) => {
     try {
-      const id = req.params.id;
-      const user = await UserModel.findOne( { _id: id } ).select( '-password' );
-      res.send( user );
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const user = await UserModel.findOne( { _id: userID || myID } ).select( '-password' );
+      return res.send( user );
     } catch ( error ) {
       next( error );
     }
@@ -24,10 +25,12 @@ module.exports = class MongoUserController {
 
   update = async ( req, res, next ) => {
     try {
-      const id = req.params.id;
+      const myID = req.me.id;
+      const userID = req.params.id;
       const updates = req.body.updates;
-      await UserModel.updateOne( { _id: id }, { $set: { ...updates } } );
-      res.send( { success: true, msg: 'Updated' } );
+      await UserModel.updateOne( { _id: userID || myID }, { $set: { ...updates } } );
+      const user = await UserModel.findOne( { _id: userID || myID } );
+      return res.send( user );
     } catch ( error ) {
       next( error );
     }
@@ -38,7 +41,7 @@ module.exports = class MongoUserController {
       const id = req.params.id;
       await UserModel.deleteOne( { _id: id } );
       await TokenModel.deleteOne( { user: id } );
-      res.send( { success: true, msg: 'Deleted' } );
+      return res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );
     }

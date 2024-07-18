@@ -4,8 +4,8 @@ module.exports = class MediaController {
     this.controller = controller;
   }
 
-  get = ( req, res, next ) => {
-    this.controller.get( req, res, next );
+  getAll = ( req, res, next ) => {
+    this.controller.getAll( req, res, next );
   };
 
   upload = ( req, res, next ) => {

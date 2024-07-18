@@ -5,10 +5,10 @@ const ProductModel = require( '../../schemas/productModel' );
 
 module.exports = class MongoMediaController {
 
-  get = async ( req, res, next ) => {
+  getAll = async ( req, res, next ) => {
     try {
       const images = await MediaModel.find().sort( { _id: -1 } );
-      res.send( images );
+      return res.send( images );
     } catch ( error ) {
       next( error );
     }
@@ -21,7 +21,7 @@ module.exports = class MongoMediaController {
       }
       const fileURL = `${req.protocol}://${req.get( 'host' )}/uploads/${req.file.filename}`;
       await MediaModel.create( { name: req.file.filename, alt: '', url: fileURL } );
-      res.send( { success: true, msg: `File uploaded: ${req.file.filename}` } );
+      return res.send( { success: true, msg: `File uploaded: ${req.file.filename}` } );
     } catch ( error ) {
       next( error );
     }
@@ -38,7 +38,7 @@ module.exports = class MongoMediaController {
         if ( err ) {
           return res.status( 400 ).send( 'File not found.' );
         }
-        res.send( { success: true, msg: `File ${filename} deleted successfully.` } );
+        return res.send( { success: true, msg: `File ${filename} deleted successfully.` } );
       } );
     } catch ( error ) {
       next( error );
