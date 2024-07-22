@@ -33,10 +33,11 @@ module.exports = class MongoAddressController {
 
   update = async ( req, res, next ) => {
     try {
-      const { updates } = req.body;
-      const id = req.params.id;
-      await AddressModel.updateOne( { _id: id }, { $set: { ...updates } } );
-      const address = await AddressModel.findOne( { _id: id } );
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const updates = req.body.updates;
+      await AddressModel.updateOne( { _id: userID || myID }, { $set: { ...updates } } );
+      const address = await AddressModel.findOne( { user: userID || myID } );
       return res.send( address );
     } catch ( error ) {
       next( error );

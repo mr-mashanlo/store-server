@@ -10,6 +10,7 @@ const userRouter = require( './routers/userRouter' );
 const productRouter = require( './routers/productRouter' );
 const categoryRouter = require( './routers/categoryRouter' );
 const addressRouter = require( './routers/addressRouter' );
+const orderRouter = require( './routers/orderRouter' );
 const errorMiddleware = require( './middlewares/errorMiddleware' );
 
 const app = express();
@@ -23,6 +24,7 @@ app.use( '/user', userRouter );
 app.use( '/product', productRouter );
 app.use( '/category', categoryRouter );
 app.use( '/address', addressRouter );
+app.use( '/order', orderRouter );
 app.use( errorMiddleware );
 
 const start = async () => {
