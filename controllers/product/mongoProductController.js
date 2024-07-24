@@ -4,7 +4,7 @@ module.exports = class MongoProductController {
 
   getAll = async ( req, res, next ) => {
     try {
-      const products = await ProductModel.find();
+      const products = await ProductModel.find().populate( 'category' ).populate( 'images' );
       return res.send( products );
     } catch ( error ) {
       next( error );
@@ -14,7 +14,7 @@ module.exports = class MongoProductController {
   getOne = async ( req, res, next ) => {
     try {
       const id = req.params.id;
-      const product = await ProductModel.findOne( { _id: id } );
+      const product = await ProductModel.findOne( { _id: id } ).populate( 'category' ).populate( 'images' );
       return res.send( product );
     } catch ( error ) {
       next( error );

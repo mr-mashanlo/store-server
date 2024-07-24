@@ -4,7 +4,17 @@ module.exports = class MongoOrderController {
 
   getAll = async ( req, res, next ) => {
     try {
-      const orders = await OrderModel.find().populate( 'products.product' );
+      const orders = await OrderModel.find().populate( { path: 'products.product', populate: { path: 'images' } } );
+      return res.send( orders );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
+  getOwn = async ( req, res, next ) => {
+    try {
+      const user = req.me.id;
+      const orders = await OrderModel.find( { user } ).populate( { path: 'products.product', populate: { path: 'images' } } );
       return res.send( orders );
     } catch ( error ) {
       next( error );
@@ -13,9 +23,8 @@ module.exports = class MongoOrderController {
 
   getOne = async ( req, res, next ) => {
     try {
-      const myID = req.me.id;
-      const userID = req.params.id;
-      const order = await OrderModel.findOne( { _id: userID || myID } ).populate( 'product' );
+      const id = req.params.id;
+      const order = await OrderModel.findOne( { _id: id } ).populate( { path: 'products.product', populate: { path: 'images' } } );
       return res.send( order );
     } catch ( error ) {
       next( error );

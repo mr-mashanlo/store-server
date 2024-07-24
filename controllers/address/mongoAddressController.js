@@ -7,7 +7,7 @@ module.exports = class MongoAddressController {
       const myID = req.me.id;
       const userID = req.params.id;
       const address = await AddressModel.findOne( { user: userID || myID } );
-      return res.send( address );
+      return res.send( address || {} );
     } catch ( error ) {
       next( error );
     }

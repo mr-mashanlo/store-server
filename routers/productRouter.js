@@ -3,7 +3,7 @@ const router = new Router();
 const productController = require( '../controllers/product' );
 const authMiddleware = require( '../middlewares/authMiddleware' );
 
-router.get( '/', productController.getAll );
+router.get( '/all', productController.getAll );
 router.get( '/:id', productController.getOne );
 router.post( '/', authMiddleware, productController.create );
 router.put( '/:id', authMiddleware, productController.update );

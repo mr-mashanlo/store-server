@@ -8,6 +8,10 @@ module.exports = class OrderController {
     this.controller.getAll( req, res, next );
   };
 
+  getOwn = ( req, res, next ) => {
+    this.controller.getOwn( req, res, next );
+  };
+
   getOne = ( req, res, next ) => {
     this.controller.getOne( req, res, next );
   };
