@@ -12,7 +12,7 @@
       "dest": "/",
       "headers": {
         "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "https://february-orpin.vercel.app",
+        "Access-Control-Allow-Origin": "https://storeclient-hazel.vercel.app",
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "*"
       }
