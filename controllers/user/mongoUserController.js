@@ -28,8 +28,7 @@ module.exports = class MongoUserController {
       const myID = req.me.id;
       const userID = req.params.id;
       const updates = req.body.updates;
-      await UserModel.updateOne( { _id: userID || myID }, { $set: { ...updates } } );
-      const user = await UserModel.findOne( { _id: userID || myID } );
+      const user = await UserModel.findOneAndUpdate( { _id: userID || myID }, { $set: { ...updates } }, { new: true } );
       return res.send( user );
     } catch ( error ) {
       next( error );

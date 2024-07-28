@@ -12,6 +12,16 @@ module.exports = class MongoCategoryController {
     }
   };
 
+  getOne = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const category = await CategoryModel.findOne( { _id: id } );
+      return res.send( category );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
   create = async ( req, res, next ) => {
     try {
       const title = req.body.title;
@@ -23,11 +33,22 @@ module.exports = class MongoCategoryController {
     }
   };
 
+  update = async ( req, res, next ) => {
+    try {
+      const id = req.body.id;
+      const updates = req.body.updates;
+      const category = await CategoryModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
+      return res.send( category );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
   delete = async ( req, res, next ) => {
     try {
-      const slug = req.params.slug;
-      await ProductModel.updateMany( { category: slug }, { $set: { category: 'default' } } );
-      await CategoryModel.deleteOne( { slug } );
+      const id = req.params.id;
+      await ProductModel.updateMany( { category: id }, { $set: { category: 'default' } } );
+      await CategoryModel.deleteOne( { _id: id } );
       return res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );

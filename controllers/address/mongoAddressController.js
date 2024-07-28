@@ -20,8 +20,9 @@ module.exports = class MongoAddressController {
 
       const userAddress = await AddressModel.findOne( { user } );
       if ( userAddress ) {
-        const address = await AddressModel.updateOne( { user }, { $set: { district, city, street } } );
-        return res.send( address );
+        await AddressModel.updateOne( { user }, { $set: { district, city, street } } );
+        const updatedUserAddress = await AddressModel.findOne( { user } );
+        return res.send( updatedUserAddress );
       }
 
       const address = await AddressModel.create( { user, district, city, street } );
@@ -36,8 +37,7 @@ module.exports = class MongoAddressController {
       const myID = req.me.id;
       const userID = req.params.id;
       const updates = req.body.updates;
-      await AddressModel.updateOne( { _id: userID || myID }, { $set: { ...updates } } );
-      const address = await AddressModel.findOne( { user: userID || myID } );
+      const address = await AddressModel.findOneAndUpdate( { user: userID || myID }, { $set: { ...updates } }, { new: true } );
       return res.send( address );
     } catch ( error ) {
       next( error );

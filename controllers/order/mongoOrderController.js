@@ -5,7 +5,7 @@ module.exports = class MongoOrderController {
 
   getAll = async ( req, res, next ) => {
     try {
-      const orders = await OrderModel.find().populate( { path: 'products.product', populate: { path: 'images' } } ).sort( { _id: -1 } );
+      const orders = await OrderModel.find().populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } ).sort( { _id: -1 } );
       return res.send( orders );
     } catch ( error ) {
       next( error );
@@ -15,7 +15,7 @@ module.exports = class MongoOrderController {
   getOwn = async ( req, res, next ) => {
     try {
       const user = req.me.id;
-      const orders = await OrderModel.find( { user } ).populate( { path: 'products.product', populate: { path: 'images' } } ).sort( { _id: -1 } );
+      const orders = await OrderModel.find( { user } ).populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } ).sort( { _id: -1 } );
       return res.send( orders );
     } catch ( error ) {
       next( error );
@@ -25,7 +25,7 @@ module.exports = class MongoOrderController {
   getOne = async ( req, res, next ) => {
     try {
       const id = req.params.id;
-      const order = await OrderModel.findOne( { _id: id } ).populate( 'user' ).populate( 'address' ).populate( { path: 'products.product', populate: { path: 'images' } } );
+      const order = await OrderModel.findOne( { _id: id } ).populate( 'user' ).populate( 'address' ).populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } );
       return res.send( order );
     } catch ( error ) {
       next( error );
@@ -48,8 +48,8 @@ module.exports = class MongoOrderController {
     try {
       const id = req.params.id;
       const updates = req.body.updates;
-      await OrderModel.updateOne( { _id: id }, { $set: { ...updates } } );
-      return res.send( { success: true, msg: 'Updated' } );
+      const order = await OrderModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
+      return res.send( order );
     } catch ( error ) {
       next( error );
     }

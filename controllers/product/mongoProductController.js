@@ -35,8 +35,7 @@ module.exports = class MongoProductController {
     try {
       const id = req.params.id;
       const updates = req.body.updates;
-      await ProductModel.updateOne( { _id: id }, { $set: { ...updates } } );
-      const product = await ProductModel.findOne( { _id: id } );
+      const product = await ProductModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
       return res.send( product );
     } catch ( error ) {
       next( error );
