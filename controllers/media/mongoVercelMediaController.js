@@ -18,9 +18,10 @@ module.exports = class MongoVercelMediaController {
     try {
       const { buffer, originalname } = req.file;
       const fileExtension = path.extname( originalname ).toLowerCase();
-      const filename = `${Date.now()}.${fileExtension}`;
+      const filename = `${Date.now()}${fileExtension}`;
       const result = await put( `uploads/${filename}`, buffer, { access: 'public' } );
-      const image = await MediaModel.create( { name: filename, alt: '', url: result.url } );
+      const savedFileName = path.basename( result.url );
+      const image = await MediaModel.create( { name: savedFileName, alt: '', url: result.url } );
       return res.send( image );
     } catch ( error ) {
       next( error );
@@ -29,11 +30,12 @@ module.exports = class MongoVercelMediaController {
 
   delete = async ( req, res, next ) => {
     try {
-      const { filename } = req.body;
-      await del( `uploads/${filename}` );
-      await ProductModel.updateMany( { images: { $in: [ process.env.BACK_URL + filename ] } }, { $pull: { images: process.env.BACK_URL + filename } } );
-      await MediaModel.deleteOne( { name: filename } );
-      return res.send( { success: true, msg: `File ${filename} deleted successfully.` } );
+      const id = req.params.id;
+      const image = await MediaModel.findOne( { _id: id } );
+      await del( `uploads/${image.name}` );
+      await ProductModel.updateMany( { images: { $in: [ id ] } }, { $pull: { images: id } } );
+      await MediaModel.deleteOne( { _id: id } );
+      return res.send( { success: true, msg: 'File deleted successfully.' } );
     } catch ( error ) {
       next( error );
     }
