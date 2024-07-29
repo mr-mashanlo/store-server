@@ -1,4 +1,4 @@
-const { put } = require( '@vercel/blob' );
+const { put, del } = require( '@vercel/blob' );
 const path = require( 'path' );
 const MediaModel = require( '../../schemas/mediaModel' );
 const ProductModel = require( '../../schemas/productModel' );
@@ -31,15 +31,13 @@ module.exports = class MongoVercelMediaController {
   delete = async ( req, res, next ) => {
     try {
       const id = req.params.id;
-      console.log( id );
       const image = await MediaModel.findOne( { _id: id } );
-      console.log( image );
 
       if ( !image ) {
         return res.send( { success: false, msg: 'Image not found.' } );
       }
 
-      // await del( `uploads/${image.url}` );
+      await del( image.url );
       await ProductModel.updateMany( { images: { $in: [ id ] } }, { $pull: { images: id } } );
       await MediaModel.deleteOne( { _id: id } );
       return res.send( { success: true, msg: 'File deleted successfully.' } );
