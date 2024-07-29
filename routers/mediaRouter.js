@@ -6,6 +6,6 @@ const authMiddleware = require( '../middlewares/authMiddleware' );
 
 router.get( '/all', authMiddleware, mediaController.getAll );
 router.post( '/', authMiddleware, uploadMiddleware, mediaController.upload );
-router.delete( '/:filename', authMiddleware, mediaController.delete );
+router.delete( '/:id', authMiddleware, mediaController.delete );
 
 module.exports = router;
