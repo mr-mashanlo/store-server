@@ -3,6 +3,8 @@
 node_modules
 dist
 uploads/*
+!uploads/images.md
+
 .env
 
 # Editor directories and files
