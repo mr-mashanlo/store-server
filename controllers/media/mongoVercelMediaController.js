@@ -32,7 +32,12 @@ module.exports = class MongoVercelMediaController {
     try {
       const id = req.params.id;
       const image = await MediaModel.findOne( { _id: id } );
-      await del( `uploads/${image.name}` );
+
+      if ( !image ) {
+        return res.send( { success: false, msg: 'Image not found.' } );
+      }
+
+      await del( `uploads/${image.url}` );
       await ProductModel.updateMany( { images: { $in: [ id ] } }, { $pull: { images: id } } );
       await MediaModel.deleteOne( { _id: id } );
       return res.send( { success: true, msg: 'File deleted successfully.' } );
