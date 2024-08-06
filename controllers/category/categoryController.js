@@ -5,7 +5,7 @@ class CategoryController {
 
   getAll = async ( req, res, next ) => {
     try {
-      const categories = await CategoryModel.find();
+      const categories = await CategoryModel.find().populate( 'image' );
       return res.send( categories );
     } catch ( error ) {
       next( error );
@@ -15,7 +15,7 @@ class CategoryController {
   getOne = async ( req, res, next ) => {
     try {
       const id = req.params.id;
-      const category = await CategoryModel.findOne( { _id: id } );
+      const category = await CategoryModel.findOne( { _id: id } ).populate( 'image' );
       return res.send( category );
     } catch ( error ) {
       next( error );
@@ -48,7 +48,7 @@ class CategoryController {
   delete = async ( req, res, next ) => {
     try {
       const id = req.params.id;
-      await ProductModel.updateMany( { category: id }, { $set: { category: 'default' } } );
+      await ProductModel.updateMany( { category: id }, { $set: { category: '669374fa918c3c6be6c0cd73' } } );
       await CategoryModel.deleteOne( { _id: id } );
       return res.send( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
