@@ -1,27 +1,59 @@
-module.exports = class ProductController {
+const ProductModel = require( '../../schemas/productModel' );
 
-  constructor( controller ) {
-    this.controller = controller;
-  }
+class ProductController {
 
-  getAll = ( req, res, next ) => {
-    this.controller.getAll( req, res, next );
+  getAll = async ( req, res, next ) => {
+    try {
+      const products = await ProductModel.find().populate( 'category' ).populate( 'images' );
+      return res.send( products );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  getOne = ( req, res, next ) => {
-    this.controller.getOne( req, res, next );
+  getOne = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const product = await ProductModel.findOne( { _id: id } ).populate( 'category' ).populate( 'images' );
+      return res.send( product );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  create = ( req, res, next ) => {
-    this.controller.create( req, res, next );
+  create = async ( req, res, next ) => {
+    try {
+      const product = req.body.product;
+      const createdProduct = await ProductModel.create( product );
+      return res.send( createdProduct );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  update = ( req, res, next ) => {
-    this.controller.update( req, res, next );
+  update = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const updates = req.body.updates;
+      const product = await ProductModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
+      return res.send( product );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  delete = ( req, res, next ) => {
-    this.controller.delete( req, res, next );
+  delete = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      await ProductModel.deleteOne( { _id: id } );
+      return res.send( { success: true, msg: 'Deleted' } );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
 };
+
+const productController = new ProductController();
+
+module.exports = productController;

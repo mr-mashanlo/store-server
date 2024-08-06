@@ -1,23 +1,53 @@
-module.exports = class UserController {
+const UserModel = require( '../../schemas/userModel' );
+const TokenModel = require( '../../schemas/tokenModel' );
 
-  constructor( controller ) {
-    this.controller = controller;
-  }
+class UserController {
 
-  getAll = ( req, res, next ) => {
-    this.controller.getAll( req, res, next );
+  getAll = async ( req, res, next ) => {
+    try {
+      const users = await UserModel.find().select( '-password' );
+      return res.send( users );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  getOne = ( req, res, next ) => {
-    this.controller.getOne( req, res, next );
+  getOne = async ( req, res, next ) => {
+    try {
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const user = await UserModel.findOne( { _id: userID || myID } ).select( '-password' );
+      return res.send( user );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  update = ( req, res, next ) => {
-    this.controller.update( req, res, next );
+  update = async ( req, res, next ) => {
+    try {
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const updates = req.body.updates;
+      const user = await UserModel.findOneAndUpdate( { _id: userID || myID }, { $set: { ...updates } }, { new: true } );
+      return res.send( user );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  delete = ( req, res, next ) => {
-    this.controller.delete( req, res, next );
+  delete = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      await UserModel.deleteOne( { _id: id } );
+      await TokenModel.deleteOne( { user: id } );
+      return res.send( { success: true, msg: 'Deleted' } );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
 };
+
+const userController = new UserController();
+
+module.exports = userController;

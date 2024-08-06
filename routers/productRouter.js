@@ -1,6 +1,6 @@
 const Router = require( 'express' );
 const router = new Router();
-const productController = require( '../controllers/product' );
+const productController = require( '../controllers/product/productController' );
 const authMiddleware = require( '../middlewares/authMiddleware' );
 
 router.get( '/all', productController.getAll );

@@ -3,7 +3,7 @@ const path = require( 'path' );
 const MediaModel = require( '../../schemas/mediaModel' );
 const ProductModel = require( '../../schemas/productModel' );
 
-module.exports = class MongoVercelMediaController {
+class VercelMediaController {
 
   getAll = async ( req, res, next ) => {
     try {
@@ -47,3 +47,7 @@ module.exports = class MongoVercelMediaController {
   };
 
 };
+
+const vercelMediaController = new VercelMediaController();
+
+module.exports = vercelMediaController;

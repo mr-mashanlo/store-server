@@ -1,8 +1,12 @@
 const Router = require( 'express' );
 const router = new Router();
-const mediaController = require( '../controllers/media' );
-const uploadMiddleware = require( '../middlewares/uploadVercelMiddleware.js' );
 const authMiddleware = require( '../middlewares/authMiddleware' );
+
+const mediaController = require( '../controllers/media/mediaController.js' );
+const uploadMiddleware = require( '../middlewares/uploadMiddleware.js' );
+
+// const mediaController = require( '../controllers/media/vercelMediaController.js' );
+// const uploadMiddleware = require( '../middlewares/vercelUploadMiddleware.js' );
 
 router.get( '/all', authMiddleware, mediaController.getAll );
 router.post( '/', authMiddleware, uploadMiddleware, mediaController.upload );

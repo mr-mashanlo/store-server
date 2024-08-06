@@ -1,31 +1,72 @@
-module.exports = class OrderController {
+const OrderModel = require( '../../schemas/orderModel' );
+const AddressModel = require( '../../schemas/addressModel' );
 
-  constructor( controller ) {
-    this.controller = controller;
-  }
+class OrderController {
 
-  getAll = ( req, res, next ) => {
-    this.controller.getAll( req, res, next );
+  getAll = async ( req, res, next ) => {
+    try {
+      const orders = await OrderModel.find().populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } ).sort( { _id: -1 } );
+      return res.send( orders );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  getOwn = ( req, res, next ) => {
-    this.controller.getOwn( req, res, next );
+  getOwn = async ( req, res, next ) => {
+    try {
+      const user = req.me.id;
+      const orders = await OrderModel.find( { user } ).populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } ).sort( { _id: -1 } );
+      return res.send( orders );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  getOne = ( req, res, next ) => {
-    this.controller.getOne( req, res, next );
+  getOne = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const order = await OrderModel.findOne( { _id: id } ).populate( 'user' ).populate( 'address' ).populate( { path: 'products.product', populate: [ { path: 'images' }, { path: 'category' } ] } );
+      return res.send( order );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  create = ( req, res, next ) => {
-    this.controller.create( req, res, next );
+  create = async ( req, res, next ) => {
+    try {
+      const user = req.me.id;
+      const products = req.body.products;
+      const address = await AddressModel.findOne( { user } );
+      const order = await OrderModel.create( { user, address: address._id, products } );
+      return res.send( order );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  update = ( req, res, next ) => {
-    this.controller.update( req, res, next );
+  update = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const updates = req.body.updates;
+      const order = await OrderModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
+      return res.send( order );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  delete = ( req, res, next ) => {
-    this.controller.delete( req, res, next );
+  delete = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      await OrderModel.deleteOne( { _id: id } );
+      return res.send( { success: true, msg: 'Deleted' } );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
 };
+
+const orderController = new OrderController();
+
+module.exports = orderController;

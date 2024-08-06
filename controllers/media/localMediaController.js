@@ -1,7 +1,7 @@
 const path = require( 'path' );
 const fs = require( 'fs' );
 
-module.exports = class LocalMediaController {
+class LocalMediaController {
 
   upload = ( req, res, next ) => {
     try {
@@ -32,3 +32,7 @@ module.exports = class LocalMediaController {
   };
 
 };
+
+const localMediaController = new LocalMediaController();
+
+module.exports = localMediaController;

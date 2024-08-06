@@ -1,23 +1,61 @@
-module.exports = class AddressController {
+const AddressModel = require( '../../schemas/addressModel' );
 
-  constructor( controller ) {
-    this.controller = controller;
-  }
+class AddressController {
 
-  getOne = ( req, res, next ) => {
-    this.controller.getOne( req, res, next );
+  getOne = async ( req, res, next ) => {
+    try {
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const address = await AddressModel.findOne( { user: userID || myID } );
+      return res.send( address || {} );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  create = ( req, res, next ) => {
-    this.controller.create( req, res, next );
+  create = async ( req, res, next ) => {
+    try {
+      const { district, city, street } = req.body;
+      const user = req.me.id;
+
+      const userAddress = await AddressModel.findOne( { user } );
+      if ( userAddress ) {
+        await AddressModel.updateOne( { user }, { $set: { district, city, street } } );
+        const updatedUserAddress = await AddressModel.findOne( { user } );
+        return res.send( updatedUserAddress );
+      }
+
+      const address = await AddressModel.create( { user, district, city, street } );
+      return res.send( address );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  update = ( req, res, next ) => {
-    this.controller.update( req, res, next );
+  update = async ( req, res, next ) => {
+    try {
+      const myID = req.me.id;
+      const userID = req.params.id;
+      const updates = req.body.updates;
+      const address = await AddressModel.findOneAndUpdate( { user: userID || myID }, { $set: { ...updates } }, { new: true } );
+      return res.send( address );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  delete = ( req, res, next ) => {
-    this.controller.delete( req, res, next );
+  delete = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      await AddressModel.delete( id );
+      return res.send( { success: true, msg: 'Deleted' } );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
 };
+
+const addressController = new AddressController();
+
+module.exports = addressController;

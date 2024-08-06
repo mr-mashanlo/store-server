@@ -1,27 +1,63 @@
-module.exports = class CategoryController {
+const CategoryModel = require( '../../schemas/categoryModel' );
+const ProductModel = require( '../../schemas/productModel' );
 
-  constructor( controller ) {
-    this.controller = controller;
-  }
+class CategoryController {
 
-  getAll = ( req, res, next ) => {
-    this.controller.getAll( req, res, next );
+  getAll = async ( req, res, next ) => {
+    try {
+      const categories = await CategoryModel.find();
+      return res.send( categories );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  getOne = ( req, res, next ) => {
-    this.controller.getOne( req, res, next );
+  getOne = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      const category = await CategoryModel.findOne( { _id: id } );
+      return res.send( category );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  create = ( req, res, next ) => {
-    this.controller.create( req, res, next );
+  create = async ( req, res, next ) => {
+    try {
+      const image = req.body.image;
+      const title = req.body.title;
+      const slug = req.body.slug;
+      const category = await CategoryModel.create( { image, title, slug } );
+      return res.send( category );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  update = ( req, res, next ) => {
-    this.controller.update( req, res, next );
+  update = async ( req, res, next ) => {
+    try {
+      const id = req.body.id;
+      const updates = req.body.updates;
+      const category = await CategoryModel.findOneAndUpdate( { _id: id }, { $set: { ...updates } }, { new: true } );
+      return res.send( category );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
-  delete = ( req, res, next ) => {
-    this.controller.delete( req, res, next );
+  delete = async ( req, res, next ) => {
+    try {
+      const id = req.params.id;
+      await ProductModel.updateMany( { category: id }, { $set: { category: 'default' } } );
+      await CategoryModel.deleteOne( { _id: id } );
+      return res.send( { success: true, msg: 'Deleted' } );
+    } catch ( error ) {
+      next( error );
+    }
   };
 
 };
+
+const categoryController = new CategoryController();
+
+module.exports = categoryController;
