@@ -1,6 +1,6 @@
 const Router = require( 'express' );
 const router = new Router();
-const orderController = require( '../controllers/order' );
+const orderController = require( '../controllers/order/orderController' );
 const authMiddleware = require( '../middlewares/authMiddleware' );
 
 router.post( '/', authMiddleware, orderController.create );
